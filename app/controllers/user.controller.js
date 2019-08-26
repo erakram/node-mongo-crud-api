@@ -1,46 +1,147 @@
 const User = require('../models/user.model.js');
+const Contact = require('../models/contact.model.js');
+var ObjectId = require('mongoose').Types.ObjectId;
 
-
+// Create New User
 exports.create_user = (req, res) => {
-    
+    console.log("Create User");
     if(!req.body.name) {
         return res.status(400).send({
-            message: "User can not be empty"
-        });
+            message: "User can't be empty"
+        })
     }
-    
-    const user = new User({
+
+    const contact = new Contact({
+        name: req.body.name,
+        mobile: req.body.mobile,
+        designation: req.body.designation
+    });
+    const user = new User ({
         name: req.body.name,
         age: req.body.age,
         gender: req.body.gender,
         email: req.body.email
     });
+    contact.save().then(data => {
+        user.contact = contact._id;
+        console.log(user.contact_id);
+        // console.log(user_id);
+        user.save().then(data => {
+            res.send(data);
+        }).catch(err => {
+            res.status(500).send({
+                message: err.message || "ERROR"
+            });
+        }); 
+    });
+        
+};
 
-    user.save()
-    .then(data => {
-        res.send(data);
+// Show all users
+exports.findAll_user = (req, res) => {
+    User.find({}).populate('contact').exec().then(users => res.json(users));
+};
+
+
+// Show single user
+exports.findOne_user = (req, res) => {
+    User.findById(req.params.userId)
+    .then(user => {
+        // var contactId = user.contact;
+        if(!user) {
+            return res.status(404).send({
+                message: "User not found with id " + req.params.userId
+            });            
+        }
+        res.send(user);
+        console.log(user);
     }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while creating the User."
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "User not found with id " + req.params.userId
+            });                
+        }
+        return res.status(500).send({
+            message: "Error retrieving user with id " + req.params.userId
         });
     });
-};
-// Retrieve and return all notes from the database.
-exports.findAll_user = (req, res) => {
-
-};
-
-// Find a single note with a noteId
-exports.findOne_user = (req, res) => {
-
+    // var myObjectIdString = JSON.stringify(ObjectId);
+    // console.log(myObjectIdString);
+    // User.findOne({_id: contactId}).populate('contact').exec(users => res.json(users));
+    
 };
 
-// Update a note identified by the noteId in the request
+//Update user
 exports.update_user = (req, res) => {
+    var userId =  { _id: req.params.userId};
+    const newusers = { $set: {
+        name: req.body.name,
+        age: req.body.age,
+        gender: req.body.gender,
+        email: req.body.email
+    } };
 
-};
+    User.findById(userId).then((userdata) => {
+        var cont = userdata.contact;
+        var contactId = {_id: cont};
+        var userId =  { _id: req.params.userId};
+        const newcontacts = { $set: {
+            name: req.body.name,
+            mobile: req.body.mobile,
+            designation: req.body.designation
+        } };
 
-// Delete a note with the specified noteId in the request
+        console.log(userId);
+        console.log(userdata);
+        Contact.findById(contactId).then((contactdata) => {
+            console.log(contactId);
+            console.log(contactdata);
+            const user = User.updateOne(userId, newusers);
+            const contact = Contact.updateOne(contactId, newcontacts);
+            Promise.all([user, contact]).then(result =>{
+                console.log(result);
+                res.status(200).json({
+                message: 'Update',
+            });
+            }).catch(err => {
+                console.error(err);
+                res.status(500).json({
+                    error: err
+            });
+        })
+        })
+    })
+}
+
+// Delete User
 exports.delete_user = (req, res) => {
+    var userId =  req.params.userId;
+    const users = new User ({
+        name: req.body.name,
+        age: req.body.age,
+        gender: req.body.gender,
+        email: req.body.email
+    });
+    User.findById(userId).then((user) => {
+        var contactId = user.contact;
+        console.log(userId);
+        Contact.findById(contactId).then((data) => {
+            console.log(contactId);
+            const user = User.deleteOne({ _id: userId });
+            const contact = Contact.deleteOne({ _id: contactId });
+                Promise.all([user, contact]).then(result =>{
+                    console.log(result);
+                    res.status(200).json({
+                    message: 'deleted',
+                });
+                }).catch(err => {
+                    console.error(err);
+                    res.status(500).json({
+                        error: err
+                });
+            })
+        })
+    });
+}
 
-};
+
