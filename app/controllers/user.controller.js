@@ -1,10 +1,8 @@
 const User = require('../models/user.model.js');
 const Contact = require('../models/contact.model.js');
-var ObjectId = require('mongoose').Types.ObjectId;
 
 // Create New User
 exports.create_user = (req, res) => {
-    console.log("Create User");
     if(!req.body.name) {
         return res.status(400).send({
             message: "User can't be empty"
@@ -24,8 +22,6 @@ exports.create_user = (req, res) => {
     });
     contact.save().then(data => {
         user.contact = contact._id;
-        console.log(user.contact_id);
-        // console.log(user_id);
         user.save().then(data => {
             res.send(data);
         }).catch(err => {
@@ -39,36 +35,13 @@ exports.create_user = (req, res) => {
 
 // Show all users
 exports.findAll_user = (req, res) => {
-    User.find({}).populate('contact').exec().then(users => res.json(users));
+    User.find().populate('contact').exec().then(users => res.json(users));
 };
 
 
 // Show single user
 exports.findOne_user = (req, res) => {
-    User.findById(req.params.userId)
-    .then(user => {
-        // var contactId = user.contact;
-        if(!user) {
-            return res.status(404).send({
-                message: "User not found with id " + req.params.userId
-            });            
-        }
-        res.send(user);
-        console.log(user);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "User not found with id " + req.params.userId
-            });                
-        }
-        return res.status(500).send({
-            message: "Error retrieving user with id " + req.params.userId
-        });
-    });
-    // var myObjectIdString = JSON.stringify(ObjectId);
-    // console.log(myObjectIdString);
-    // User.findOne({_id: contactId}).populate('contact').exec(users => res.json(users));
-    
+    User.findOne({ _id: (req.params.userId)}).populate('contact').exec().then(users => res.json(users));
 };
 
 //Update user
@@ -90,16 +63,10 @@ exports.update_user = (req, res) => {
             mobile: req.body.mobile,
             designation: req.body.designation
         } };
-
-        console.log(userId);
-        console.log(userdata);
         Contact.findById(contactId).then((contactdata) => {
-            console.log(contactId);
-            console.log(contactdata);
             const user = User.updateOne(userId, newusers);
             const contact = Contact.updateOne(contactId, newcontacts);
             Promise.all([user, contact]).then(result =>{
-                console.log(result);
                 res.status(200).json({
                 message: 'Update',
             });
@@ -124,13 +91,10 @@ exports.delete_user = (req, res) => {
     });
     User.findById(userId).then((user) => {
         var contactId = user.contact;
-        console.log(userId);
         Contact.findById(contactId).then((data) => {
-            console.log(contactId);
             const user = User.deleteOne({ _id: userId });
             const contact = Contact.deleteOne({ _id: contactId });
                 Promise.all([user, contact]).then(result =>{
-                    console.log(result);
                     res.status(200).json({
                     message: 'deleted',
                 });
