@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const port = process.env.PORT || 3000
 
 const app = express();
 
@@ -31,6 +32,6 @@ mongoose.connect(dbConfig.url, {
 require('./app/routes/user.routes.js')(app);
 // require('./app/routes/contact.routes.js')(app);
 
-app.listen(8080, () => {
-    console.log("Server is listening on port 8080");
+app.listen(port, () => {
+    console.log("Server is listening on port " +port);
 });

@@ -83,12 +83,6 @@ exports.update_user = (req, res) => {
 // Delete User
 exports.delete_user = (req, res) => {
     var userId =  req.params.userId;
-    const users = new User ({
-        name: req.body.name,
-        age: req.body.age,
-        gender: req.body.gender,
-        email: req.body.email
-    });
     User.findById(userId).then((user) => {
         var contactId = user.contact;
         Contact.findById(contactId).then((data) => {
