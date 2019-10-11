@@ -15,6 +15,7 @@ app.get('/', (req, res) => {
 // Configuring the database
 const dbConfig = require('./config/database.config.js');
 const mongoose = require('mongoose');
+require('dotenv').config()
 
 mongoose.Promise = global.Promise;
 mongoose.set('useFindAndModify', false);
