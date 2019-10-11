@@ -5,7 +5,7 @@ module.exports = (app) => {
     app.post('/api/v1/create_user', users.create_user);
 
     // Retrieve all user
-    app.get('/api/v1/show_userses', users.findAll_user);
+    app.get('/api/v1/show_users', users.findAll_user);
 
     // Retrieve single user with userId
     app.get('/api/v1/show_user/:userId', users.findOne_user);
