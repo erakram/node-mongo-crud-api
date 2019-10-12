@@ -1,12 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3030
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(bodyParser.json())
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+});
 
 app.get('/', (req, res) => {
     res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
