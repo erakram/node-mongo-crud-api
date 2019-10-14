@@ -21,14 +21,23 @@ app.use(bodyParser.json())
 //     next();
     
 // });
-
+var whitelist = ['https://react-api.herokuapp.com/', 'http://localhost:3000']
 var corsOptions = {
-    origin: 'https://react-api.herokuapp.com/',
-    optionsSuccessStatus: 200
-}
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    }
+  }
+// var corsOptions = {
+//     origin: 'https://react-api.herokuapp.com/',
+//     optionsSuccessStatus: 200
+// }
 
 app.get('/', cors(corsOptions), function (req, res) {
-    res.json({"message": "Welcome to node/MongoDB js CRUD API :)"});
+    res.json({"message": "Welcome to node/MongoDB js CRUD API/React :)"});
 });
 
 // Configuring the database
