@@ -8,6 +8,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(bodyParser.json())
+app.use(cors())
 
 // app.use((req, res, next) => {
 //     res.header('Access-Control-Allow-Origin', 'https://react-api.herokuapp.com/');
@@ -21,7 +22,7 @@ app.use(bodyParser.json())
 //     next();
     
 // });
-var whitelist = ['https://react-api.herokuapp.com/', 'http://localhost:3000']
+// var whitelist = ['https://react-api.herokuapp.com/', 'http://localhost:3000']
 // var corsOptions = {
 //     origin: function (origin, callback) {
 //       if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -31,22 +32,22 @@ var whitelist = ['https://react-api.herokuapp.com/', 'http://localhost:3000']
 //       }
 //     }
 //   }
-  var corsOptionsDelegate = function (req, callback) {
-    var corsOptions;
-    if (whitelist.indexOf(req.header('Origin')) !== -1) {
-      corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
-    } else {
-      corsOptions = { origin: false } // disable CORS for this request
-    }
-    callback(null, corsOptions) // callback expects two parameters: error and options
-  }
+//   var corsOptionsDelegate = function (req, callback) {
+//     var corsOptions;
+//     if (whitelist.indexOf(req.header('Origin')) !== -1) {
+//       corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
+//     } else {
+//       corsOptions = { origin: false } // disable CORS for this request
+//     }
+//     callback(null, corsOptions) // callback expects two parameters: error and options
+//   }
   
 // var corsOptions = {
 //     origin: 'https://react-api.herokuapp.com/',
 //     optionsSuccessStatus: 200
 // }
 
-app.get('/', cors(corsOptionsDelegate), function (req, res) {
+app.get('/', function (req, res, next) {
     res.json({"message": "Welcome to node/MongoDB js CRUD API/React :)"});
 });
 
