@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+var cors = require('cors')
 const port = process.env.PORT || 3030
 
 const app = express();
@@ -21,7 +22,12 @@ app.use((req, res, next) => {
     
 });
 
-app.get('/', (req, res) => {
+var corsOptions = {
+    origin: 'https://react-api.herokuapp.com/',
+    optionsSuccessStatus: 200
+}
+
+app.get('/', cors(corsOptions), function (req, res) {
     res.json({"message": "Welcome to node js CRUD API :)"});
 });
 
