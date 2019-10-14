@@ -13,10 +13,11 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
+    console.log(res.header);
 });
 
 app.get('/', (req, res) => {
-    res.json({"message": "Welcome to node js CRUD API....."});
+    res.json({"message": "Welcome to node js CRUD API :)"});
 });
 
 // Configuring the database
