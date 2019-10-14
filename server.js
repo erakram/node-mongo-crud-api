@@ -9,18 +9,18 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(bodyParser.json())
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://react-api.herokuapp.com/');
-    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
-    // res.header('Access-Control-Allow-Headers', 'Content-Type');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+// app.use((req, res, next) => {
+//     res.header('Access-Control-Allow-Origin', 'https://react-api.herokuapp.com/');
+//     res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+//     // res.header('Access-Control-Allow-Headers', 'Content-Type');
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
-    console.log(res.header);
-    // console.log(res.header.Access-Control-Allow-Origin);
+//     console.log(res.header);
+//     // console.log(res.header.Access-Control-Allow-Origin);
 
-    next();
+//     next();
     
-});
+// });
 
 var corsOptions = {
     origin: 'https://react-api.herokuapp.com/',
@@ -28,7 +28,7 @@ var corsOptions = {
 }
 
 app.get('/', cors(corsOptions), function (req, res) {
-    res.json({"message": "Welcome to node js CRUD API :)"});
+    res.json({"message": "Welcome to node/MongoDB js CRUD API :)"});
 });
 
 // Configuring the database
