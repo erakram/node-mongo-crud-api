@@ -22,21 +22,31 @@ app.use(bodyParser.json())
     
 // });
 var whitelist = ['https://react-api.herokuapp.com/', 'http://localhost:3000']
-var corsOptions = {
-    origin: function (origin, callback) {
-      if (whitelist.indexOf(origin) !== -1 || !origin) {
-        callback(null, true)
-      } else {
-        callback(new Error('Not allowed by CORS'))
-      }
+// var corsOptions = {
+//     origin: function (origin, callback) {
+//       if (whitelist.indexOf(origin) !== -1 || !origin) {
+//         callback(null, true)
+//       } else {
+//         callback(new Error('Not allowed by CORS'))
+//       }
+//     }
+//   }
+  var corsOptionsDelegate = function (req, callback) {
+    var corsOptions;
+    if (whitelist.indexOf(req.header('Origin')) !== -1) {
+      corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
+    } else {
+      corsOptions = { origin: false } // disable CORS for this request
     }
+    callback(null, corsOptions) // callback expects two parameters: error and options
   }
+  
 // var corsOptions = {
 //     origin: 'https://react-api.herokuapp.com/',
 //     optionsSuccessStatus: 200
 // }
 
-app.get('/', cors(corsOptions), function (req, res) {
+app.get('/', cors(corsOptionsDelegate), function (req, res) {
     res.json({"message": "Welcome to node/MongoDB js CRUD API/React :)"});
 });
 
